@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import androidx.core.app.ActivityCompat;
@@ -42,6 +43,7 @@ import com.tencent.taisdk.TAIOralEvaluationRet;
 import com.tencent.taisdk.TAIOralEvaluationServerType;
 import com.tencent.taisdk.TAIOralEvaluationStorageMode;
 import com.tencent.taisdk.TAIOralEvaluationTextMode;
+import com.tencent.taisdk.TAIOralEvaluationWord;
 import com.tencent.taisdk.TAIOralEvaluationWorkMode;
 import com.tencent.taisdk.TAIRecorderParam;
 
@@ -78,9 +80,6 @@ public class FlutterTencentSoePlugin implements FlutterPlugin, MethodCallHandler
 
             @Override
             public void onEvaluationData(TAIOralEvaluationData taiOralEvaluationData, TAIOralEvaluationRet taiOralEvaluationRet) {
-                Gson gson = new Gson();
-                String retString = gson.toJson(result);
-                result.success(retString);
             }
 
             @Override
@@ -92,7 +91,9 @@ public class FlutterTencentSoePlugin implements FlutterPlugin, MethodCallHandler
 
             @Override
             public void onFinalEvaluationData(TAIOralEvaluationData taiOralEvaluationData, TAIOralEvaluationRet taiOralEvaluationRet) {
-
+                Gson gson = new Gson();
+                String retString = gson.toJson(taiOralEvaluationRet);
+                result.success(retString);
             }
 
             @Override
@@ -111,9 +112,19 @@ public class FlutterTencentSoePlugin implements FlutterPlugin, MethodCallHandler
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         this.result = result;
         if (call.method.equals("start")) {
-            onRecord(call, result);
+            RecordInput input = new RecordInput();
+            input.setAppId(call.argument("appId"));
+            input.setSecretId(call.argument("secretId"));
+            input.setSecretKey(call.argument("secretKey"));
+            input.setTaiOralEvaluationEvalMode(call.argument("taiOralEvaluationEvalMode"));
+            input.setRefText(call.argument("refText"));
+            input.setScoreCoeff(call.argument("scoreCoeff"));
+
+            onRecord(call, result, input);
         } else if (call.method.equals("stop")) {
             onStop(call, result);
+        } else if (call.method.equals("isRecording")) {
+            isRecording(call, result);
         } else {
             result.notImplemented();
         }
@@ -149,34 +160,36 @@ public class FlutterTencentSoePlugin implements FlutterPlugin, MethodCallHandler
         this.oral.stopRecordAndEvaluation();
     }
 
-    public void onRecord(final MethodCall call, final Result result) {
-//在开始调用`startRecordAndEvaluation`前设置录制参数
+    public void onRecord(final MethodCall call, final Result result, final RecordInput input) {
+        TAIOralEvaluationParam param = new TAIOralEvaluationParam();
+        param.context = activity;
+        param.sessionId = UUID.randomUUID().toString();
+        param.appId = input.getAppId();
+        param.soeAppId = "";
+        param.secretId = input.getSecretId();
+        param.secretKey = input.getSecretKey();
+
+        param.workMode = TAIOralEvaluationWorkMode.ONCE;
+        param.evalMode = input.getTaiOralEvaluationEvalMode();
+        param.storageMode = TAIOralEvaluationStorageMode.DISABLE;
+        param.fileType = TAIOralEvaluationFileType.MP3;
+        param.serverType = TAIOralEvaluationServerType.ENGLISH;
+        param.textMode = TAIOralEvaluationTextMode.NORMAL;
+        param.scoreCoeff = input.getScoreCoeff();
+        param.refText = input.getRefText();
+        param.timeout = 30;
+        param.retryTimes = 0;
         TAIRecorderParam recordParam = new TAIRecorderParam();
         recordParam.fragSize = 1024;
-        recordParam.fragEnable = true;
+        recordParam.fragEnable = false;
         recordParam.vadEnable = true;
         recordParam.vadInterval = 5000;
         this.oral.setRecorderParam(recordParam);
-
-
-        //初始化参数
-        TAIOralEvaluationParam param = new TAIOralEvaluationParam();
-        param.context = activity;
-        param.appId = "1300525458";
-        param.sessionId = UUID.randomUUID().toString();
-        param.workMode = TAIOralEvaluationWorkMode.ONCE;
-        param.evalMode = TAIOralEvaluationEvalMode.SENTENCE;
-        param.storageMode = TAIOralEvaluationStorageMode.DISABLE;
-        param.serverType = TAIOralEvaluationServerType.ENGLISH;
-        param.fileType = TAIOralEvaluationFileType.MP3;
-        param.scoreCoeff = 1.0;
-        param.refText = "book";
-        param.secretId = "AKIDjAUr4HpCzOOl06yHF91qUzMbEh1Je8YP";
-        param.secretKey = "ueFh1gFl9QH1cAbwEQRH5qgOwM8mKl3g";
-        param.token = "";
-
-        //开始录制
         this.oral.startRecordAndEvaluation(param);
     }
 
+
+    public void isRecording(final MethodCall call, final Result result) {
+        result.success(this.oral.isRecording());
+    }
 }

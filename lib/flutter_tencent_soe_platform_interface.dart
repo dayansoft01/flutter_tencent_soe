@@ -1,6 +1,7 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'flutter_tencent_soe_method_channel.dart';
+import 'tai-oral-evaluation-ret.dart';
 
 abstract class FlutterTencentSoePlatform extends PlatformInterface {
   /// Constructs a FlutterTencentSoePlatform.
@@ -14,7 +15,7 @@ abstract class FlutterTencentSoePlatform extends PlatformInterface {
   ///
   /// Defaults to [MethodChannelFlutterTencentSoe].
   static FlutterTencentSoePlatform get instance => _instance;
-  
+
   /// Platform-specific implementations should set this with their own
   /// platform-specific class that extends [FlutterTencentSoePlatform] when
   /// they register themselves.
@@ -23,14 +24,20 @@ abstract class FlutterTencentSoePlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
+  Future start({required String appId,
+    required String secretId,
+    required String secretKey,
+    required int taiOralEvaluationEvalMode,
+    required String refText,
+    required double scoreCoeff}) {
+    throw UnimplementedError('start() has not been implemented.');
   }
 
-  Future<String?> start(){
-    throw UnimplementedError('platformVersion() has not been implemented.');
+  Future<TAIOralEvaluationRet> stop() {
+    throw UnimplementedError('stop() has not been implemented.');
   }
-  Future<String?> stop(){
-    throw UnimplementedError('platformVersion() has not been implemented.');
+
+  Future<bool> isRecording() {
+    throw UnimplementedError('isRecording() has not been implemented.');
   }
 }

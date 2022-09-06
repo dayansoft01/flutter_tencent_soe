@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'flutter_tencent_soe_platform_interface.dart';
+import 'tai-oral-evaluation-ret.dart';
+import 'dart:convert';
 
 /// An implementation of [FlutterTencentSoePlatform] that uses method channels.
 class MethodChannelFlutterTencentSoe extends FlutterTencentSoePlatform {
@@ -10,18 +12,31 @@ class MethodChannelFlutterTencentSoe extends FlutterTencentSoePlatform {
   final methodChannel = const MethodChannel('flutter_tencent_soe');
 
   @override
-  Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
-    return version;
+  Future start(
+      {required String appId,
+      required String secretId,
+      required String secretKey,
+      required int taiOralEvaluationEvalMode,
+      required String refText,
+      required double scoreCoeff}) async {
+    await methodChannel.invokeMethod<String>('start', <String, dynamic>{
+      "appId": appId,
+      "secretId": secretId,
+      "secretKey": secretKey,
+      "taiOralEvaluationEvalMode": taiOralEvaluationEvalMode,
+      "refText": refText,
+      "scoreCoeff": scoreCoeff
+    });
   }
 
   @override
-  Future<String?> start() async{
-    return await methodChannel.invokeMethod<String>('start');
+  Future<TAIOralEvaluationRet> stop() async {
+    var ret = await methodChannel.invokeMethod<String>('stop');
+    return TAIOralEvaluationRet.fromJson(json.decode(ret!));
   }
 
   @override
-  Future<String?> stop() async {
-    return await methodChannel.invokeMethod<String>('stop');
+  Future<bool> isRecording() async {
+    return (await methodChannel.invokeMethod<bool>('isRecording'))!;
   }
 }

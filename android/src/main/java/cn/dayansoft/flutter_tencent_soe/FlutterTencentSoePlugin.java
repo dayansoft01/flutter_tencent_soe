@@ -80,12 +80,14 @@ public class FlutterTencentSoePlugin implements FlutterPlugin, MethodCallHandler
             public void onEvaluationData(TAIOralEvaluationData taiOralEvaluationData, TAIOralEvaluationRet taiOralEvaluationRet) {
                 Gson gson = new Gson();
                 String retString = gson.toJson(result);
+                result.success(retString);
             }
 
             @Override
             public void onEvaluationError(TAIOralEvaluationData taiOralEvaluationData, TAIError taiError) {
                 Gson gson = new Gson();
                 String retString = gson.toJson(taiError);
+                result.success(retString);
             }
 
             @Override

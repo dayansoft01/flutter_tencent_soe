@@ -6,11 +6,11 @@ class FlutterTencentSoe {
     return FlutterTencentSoePlatform.instance.getPlatformVersion();
   }
 
-  Future start(){
-    return FlutterTencentSoePlatform.instance.start();
+  Future<String?> start() async{
+    return await  FlutterTencentSoePlatform.instance.start();
   }
 
-  Future stop(){
-    return FlutterTencentSoePlatform.instance.stop();
+  Future<String?> stop()async{
+    return await  FlutterTencentSoePlatform.instance.stop();
   }
 }

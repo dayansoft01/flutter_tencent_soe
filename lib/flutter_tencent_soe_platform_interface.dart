@@ -27,10 +27,10 @@ abstract class FlutterTencentSoePlatform extends PlatformInterface {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
-  Future start(){
+  Future<String?> start(){
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
-  Future stop(){
+  Future<String?> stop(){
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 }

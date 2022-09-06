@@ -16,12 +16,12 @@ class MethodChannelFlutterTencentSoe extends FlutterTencentSoePlatform {
   }
 
   @override
-  Future start() async{
-    await methodChannel.invokeMethod('start');
+  Future<String?> start() async{
+    return await methodChannel.invokeMethod<String>('start');
   }
 
   @override
-  Future stop() async {
-    await methodChannel.invokeMethod('stop');
+  Future<String?> stop() async {
+    return await methodChannel.invokeMethod<String>('stop');
   }
 }

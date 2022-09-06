@@ -110,7 +110,7 @@ public class FlutterTencentSoePlugin implements FlutterPlugin, MethodCallHandler
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         this.result = result;
-        if (call.method.equals("record")) {
+        if (call.method.equals("start")) {
             onRecord(call, result);
         } else if (call.method.equals("stop")) {
             onStop(call, result);
@@ -162,7 +162,7 @@ public class FlutterTencentSoePlugin implements FlutterPlugin, MethodCallHandler
         //初始化参数
         TAIOralEvaluationParam param = new TAIOralEvaluationParam();
         param.context = activity;
-        param.appId = "";
+        param.appId = "1300525458";
         param.sessionId = UUID.randomUUID().toString();
         param.workMode = TAIOralEvaluationWorkMode.ONCE;
         param.evalMode = TAIOralEvaluationEvalMode.SENTENCE;
@@ -170,9 +170,9 @@ public class FlutterTencentSoePlugin implements FlutterPlugin, MethodCallHandler
         param.serverType = TAIOralEvaluationServerType.ENGLISH;
         param.fileType = TAIOralEvaluationFileType.MP3;
         param.scoreCoeff = 1.0;
-        param.refText = "";
-        param.secretId = "";
-        param.secretKey = "";
+        param.refText = "book";
+        param.secretId = "AKIDjAUr4HpCzOOl06yHF91qUzMbEh1Je8YP";
+        param.secretKey = "ueFh1gFl9QH1cAbwEQRH5qgOwM8mKl3g";
         param.token = "";
 
         //开始录制

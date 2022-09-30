@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -8,6 +9,7 @@ import 'package:flutter_tencent_soe/flutter_tencent_soe.dart';
 import 'package:flutter_tencent_soe/tai-oral-evaluation-ret.dart';
 import 'package:flutter_tencent_soe/tai-oral-evaluation-eval-mode.dart';
 import 'package:record/record.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() {
   FlutterTencentSoe.initialize(
@@ -58,6 +60,13 @@ class _MyAppState extends State<MyApp> {
               recording = false;
               var r = await _flutterTencentSoePlugin.stop();
               ret = json.encode(r.toJson());
+              var dir = await getExternalStorageDirectory();
+              var filePath = '${dir?.path}/1.mp3';
+              var file = File(filePath);
+              if (!file.existsSync()) {
+                file.createSync();
+              }
+              await file.writeAsBytes(r.audio!.toList());
               setState(() {});
               return;
             }

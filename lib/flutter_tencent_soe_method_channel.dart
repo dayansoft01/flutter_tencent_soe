@@ -31,8 +31,12 @@ class MethodChannelFlutterTencentSoe extends FlutterTencentSoePlatform {
 
   @override
   Future<TAIOralEvaluationRet> stop() async {
-    var ret = await methodChannel.invokeMethod<String>('stop');
-    return TAIOralEvaluationRet.fromJson(json.decode(ret!));
+    var map = Map<String, dynamic>.from(
+        await methodChannel.invokeMethod<dynamic>('stop'));
+    var ret =
+        TAIOralEvaluationRet.fromJson(json.decode(map!['resultJsonText']));
+    ret.audio = map['audio'];
+    return ret;
   }
 
   @override

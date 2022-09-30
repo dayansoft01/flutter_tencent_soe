@@ -80,6 +80,7 @@ public class FlutterTencentSoePlugin implements FlutterPlugin, MethodCallHandler
 
             @Override
             public void onEvaluationData(TAIOralEvaluationData taiOralEvaluationData, TAIOralEvaluationRet taiOralEvaluationRet) {
+
             }
 
             @Override
@@ -93,7 +94,10 @@ public class FlutterTencentSoePlugin implements FlutterPlugin, MethodCallHandler
             public void onFinalEvaluationData(TAIOralEvaluationData taiOralEvaluationData, TAIOralEvaluationRet taiOralEvaluationRet) {
                 Gson gson = new Gson();
                 String retString = gson.toJson(taiOralEvaluationRet);
-                result.success(retString);
+                HashMap map = new HashMap<String, Object>();
+                map.put("audio",taiOralEvaluationData.audio);
+                map.put("resultJsonText",retString);
+                result.success(map);
             }
 
             @Override
@@ -171,7 +175,7 @@ public class FlutterTencentSoePlugin implements FlutterPlugin, MethodCallHandler
 
         param.workMode = TAIOralEvaluationWorkMode.ONCE;
         param.evalMode = input.getTaiOralEvaluationEvalMode();
-        param.storageMode = TAIOralEvaluationStorageMode.DISABLE;
+        param.storageMode = TAIOralEvaluationStorageMode.PERMANENT;
         param.fileType = TAIOralEvaluationFileType.MP3;
         param.serverType = TAIOralEvaluationServerType.ENGLISH;
         param.textMode = TAIOralEvaluationTextMode.NORMAL;

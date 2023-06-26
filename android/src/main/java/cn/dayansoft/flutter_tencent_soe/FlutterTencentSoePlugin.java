@@ -85,9 +85,14 @@ public class FlutterTencentSoePlugin implements FlutterPlugin, MethodCallHandler
 
             @Override
             public void onEvaluationError(TAIOralEvaluationData taiOralEvaluationData, TAIError taiError) {
-                Gson gson = new Gson();
-                String retString = gson.toJson(taiError);
-                result.success(retString);
+                try {
+                    Gson gson = new Gson();
+                    String retString = gson.toJson(taiError);
+                    result.success(retString);
+                }catch (IllegalStateException e){
+
+                }
+
             }
 
             @Override

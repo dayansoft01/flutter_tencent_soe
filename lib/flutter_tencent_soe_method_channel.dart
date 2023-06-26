@@ -1,9 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'flutter_tencent_soe_platform_interface.dart';
 import 'tai-oral-evaluation-ret.dart';
-import 'dart:convert';
 
 /// An implementation of [FlutterTencentSoePlatform] that uses method channels.
 class MethodChannelFlutterTencentSoe extends FlutterTencentSoePlatform {
@@ -31,12 +32,17 @@ class MethodChannelFlutterTencentSoe extends FlutterTencentSoePlatform {
 
   @override
   Future<TAIOralEvaluationRet> stop() async {
-    var map = Map<String, dynamic>.from(
-        await methodChannel.invokeMethod<dynamic>('stop'));
-    var ret =
-        TAIOralEvaluationRet.fromJson(json.decode(map!['resultJsonText']));
-    ret.audio = map['audio'];
-    return ret;
+    var a = await methodChannel.invokeMethod<dynamic>('stop');
+    print(a);
+    try {
+      var map = Map<String, dynamic>.from(a);
+      var ret =
+          TAIOralEvaluationRet.fromJson(json.decode(map['resultJsonText']));
+      ret.audio = map['audio'];
+      return ret;
+    } catch (e) {
+      return TAIOralEvaluationRet(suggestedScore: 0);
+    }
   }
 
   @override
